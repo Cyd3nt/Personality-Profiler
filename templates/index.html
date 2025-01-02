@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Emotional Model Interview Interface</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.css" rel="stylesheet">
+    <style>
+        .emotion-chart {
+            max-width: 400px;
+            margin: 20px auto;
+        }
+        .slider-container {
+            margin: 10px 0;
+        }
+        .slider-label {
+            display: inline-block;
+            width: 150px;
+        }
+        .slider-value {
+            display: inline-block;
+            width: 50px;
+            text-align: right;
+        }
+        .card {
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .memory-card {
+            background-color: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="container py-4">
+    <h1 class="text-center mb-4">Emotional Model Interview Interface</h1>
+
+    <div class="text-center mb-4">
+        <a class="btn btn-primary" href="/questionnaire">Take Personality Assessment</a>
+    </div>
+
+    <div class="row">
+        <!-- Left Column: Personality Configuration -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Personality Configuration</h3>
+                </div>
+                <div class="card-body">
+                    <form id="personalityForm">
+                        <div class="slider-container">
+                            <span class="slider-label">Openness:</span>
+                            <input class="form-range" id="openness" max="1" min="0" step="0.1"
+                                   type="range" value="{{ personality.openness }}">
+                            <span class="slider-value" id="opennessValue">{{ personality.openness }}</span>
+                        </div>
+                        <div class="slider-container">
+                            <span class="slider-label">Conscientiousness:</span>
+                            <input class="form-range" id="conscientiousness" max="1" min="0" step="0.1"
+                                   type="range" value="{{ personality.conscientiousness }}">
+                            <span class="slider-value"
+                                  id="conscientiousnessValue">{{ personality.conscientiousness }}</span>
+                        </div>
+                        <div class="slider-container">
+                            <span class="slider-label">Extraversion:</span>
+                            <input class="form-range" id="extraversion" max="1" min="0" step="0.1"
+                                   type="range" value="{{ personality.extraversion }}">
+                            <span class="slider-value" id="extraversionValue">{{ personality.extraversion }}</span>
+                        </div>
+                        <div class="slider-container">
+                            <span class="slider-label">Agreeableness:</span>
+                            <input class="form-range" id="agreeableness" max="1" min="0" step="0.1"
+                                   type="range" value="{{ personality.agreeableness }}">
+                            <span class="slider-value" id="agreeablenessValue">{{ personality.agreeableness }}</span>
+                        </div>
+                        <div class="slider-container">
+                            <span class="slider-label">Neuroticism:</span>
+                            <input class="form-range" id="neuroticism" max="1" min="0" step="0.1"
+                                   type="range" value="{{ personality.neuroticism }}">
+                            <span class="slider-value" id="neuroticismValue">{{ personality.neuroticism }}</span>
+                        </div>
+                        <div class="slider-container">
+                            <span class="slider-label">Optimism:</span>
+                            <input class="form-range" id="optimism" max="1" min="0" step="0.1"
+                                   type="range" value="{{ personality.optimism }}">
+                            <span class="slider-value" id="optimismValue">{{ personality.optimism }}</span>
+                        </div>
+                        <div class="slider-container">
+                            <span class="slider-label">Energy Level:</span>
+                            <input class="form-range" id="energy_level" max="1" min="0" step="0.1"
+                                   type="range" value="{{ personality.energy_level }}">
+                            <span class="slider-value" id="energyLevelValue">{{ personality.energy_level }}</span>
+                        </div>
+                        <div class="slider-container">
+                            <span class="slider-label">Confidence:</span>
+                            <input class="form-range" id="confidence" max="1" min="0" step="0.1"
+                                   type="range" value="{{ personality.confidence }}">
+                            <span class="slider-value" id="confidenceValue">{{ personality.confidence }}</span>
+                        </div>
+                        <div class="slider-container">
+                            <span class="slider-label">Emotional Stability:</span>
+                            <input class="form-range" id="emotional_stability" max="1" min="0" step="0.1"
+                                   type="range" value="{{ personality.emotional_stability }}">
+                            <span class="slider-value" id="emotionalStabilityValue">{{ personality.emotional_stability }}</span>
+                        </div>
+                        <button class="btn btn-primary mt-3" type="submit">Update Personality</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Event Processing and Visualization -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Event Processing</h3>
+                </div>
+                <div class="card-body">
+                    <form id="eventForm">
+                        <div class="mb-3">
+                            <label class="form-label" for="event">Event Description:</label>
+                            <textarea class="form-control" id="event" required rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="intensity">Event Intensity (0-1):</label>
+                            <input class="form-range" id="intensity" max="1" min="0" step="0.1" type="range"
+                                   value="0.8">
+                            <span id="intensityValue">0.8</span>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Context:</label>
+                            <div class="row">
+                                <div class="col">
+                                    <input class="form-control" id="location" placeholder="Location" type="text">
+                                </div>
+                                <div class="col">
+                                    <input class="form-control" id="activity" placeholder="Activity" type="text">
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col">
+                                    <input class="form-control" id="social_context" placeholder="Social Context"
+                                           type="text">
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" type="submit">Process Event</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Emotional State Visualization -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Current Emotional State</h3>
+                </div>
+                <div class="card-body">
+                    <canvas class="emotion-chart" id="emotionChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Memory Display -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Recent Memory</h3>
+                </div>
+                <div class="card-body" id="memoryContainer">
+                    <!-- Memory cards will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+<script>
+    // Initialize emotion chart
+    const ctx = document.getElementById('emotionChart').getContext('2d');
+    const emotionChart = new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: ['Joy', 'Sadness', 'Anger', 'Fear', 'Trust', 'Surprise'],
+            datasets: [{
+                label: 'Emotional State',
+                data: [0, 0, 0, 0, 0, 0],
+                fill: true,
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgb(54, 162, 235)',
+                pointBackgroundColor: 'rgb(54, 162, 235)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgb(54, 162, 235)'
+            }]
+        },
+        options: {
+            scales: {
+                r: {
+                    min: 0,
+                    max: 1
+                }
+            }
+        }
+    });
+
+    // Update personality sliders
+    document.querySelectorAll('input[type="range"]').forEach(slider => {
+        slider.addEventListener('input', function() {
+            document.getElementById(this.id + 'Value').textContent = this.value;
+        });
+    });
+
+    // Handle personality form submission
+    document.getElementById('personalityForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const personality = {
+            openness: parseFloat(document.getElementById('openness').value),
+            conscientiousness: parseFloat(document.getElementById('conscientiousness').value),
+            extraversion: parseFloat(document.getElementById('extraversion').value),
+            agreeableness: parseFloat(document.getElementById('agreeableness').value),
+            neuroticism: parseFloat(document.getElementById('neuroticism').value),
+            optimism: parseFloat(document.getElementById('optimism').value),
+            energy_level: parseFloat(document.getElementById('energy_level').value),
+            confidence: parseFloat(document.getElementById('confidence').value),
+            emotional_stability: parseFloat(document.getElementById('emotional_stability').value)
+        };
+
+        try {
+            const response = await fetch('/update_personality', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(personality)
+            });
+            const data = await response.json();
+            if (data.success) {
+                alert('Personality updated successfully!');
+            } else {
+                alert('Error updating personality: ' + data.error);
+            }
+        } catch (error) {
+            alert('Error updating personality: ' + error);
+        }
+    });
+
+    // Handle event form submission
+    document.getElementById('eventForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const eventData = {
+            event: document.getElementById('event').value,
+            intensity: parseFloat(document.getElementById('intensity').value),
+            context: {
+                location: document.getElementById('location').value,
+                activity: document.getElementById('activity').value,
+                social_context: document.getElementById('social_context').value
+            }
+        };
+
+        try {
+            const response = await fetch('/process_event', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(eventData)
+            });
+            const data = await response.json();
+            if (data.success) {
+                // Update emotion chart
+                emotionChart.data.datasets[0].data = [
+                    data.response.joy,
+                    data.response.sadness,
+                    data.response.anger,
+                    data.response.fear,
+                    data.response.trust,
+                    data.response.surprise
+                ];
+                emotionChart.update();
+
+                // Update memory display
+                if (data.memory) {
+                    const memoryHtml = `
+                        <div class="memory-card">
+                            <h5>Event: ${data.memory.trigger}</h5>
+                            <p><strong>Context:</strong> ${JSON.stringify(data.memory.context)}</p>
+                            <p><strong>Intensity:</strong> ${data.memory.intensity}</p>
+                            <p><strong>Emotional Response:</strong></p>
+                            <ul>
+                                ${Object.entries(data.memory.emotion_state)
+                                    .map(([key, value]) => `<li>${key}: ${value.toFixed(2)}</li>`)
+                                    .join('')}
+                            </ul>
+                        </div>
+                    `;
+                    document.getElementById('memoryContainer').innerHTML = memoryHtml;
+                }
+            } else {
+                alert('Error processing event: ' + data.error);
+            }
+        } catch (error) {
+            alert('Error processing event: ' + error);
+        }
+    });
+
+    // Update intensity slider value display
+    document.getElementById('intensity').addEventListener('input', function() {
+        document.getElementById('intensityValue').textContent = this.value;
+    });
+</script>
+</body>
+</html>

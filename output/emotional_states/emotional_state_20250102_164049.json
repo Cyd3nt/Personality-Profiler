@@ -1,0 +1,12 @@
+{
+    "valence": 0.5,
+    "arousal": 0.5,
+    "dominance": 0.5,
+    "joy": 0.0,
+    "sadness": 0.0,
+    "anger": 0.0,
+    "fear": 0.0,
+    "trust": 0.0,
+    "surprise": 0.0,
+    "emotional_stability": 0.5
+}
